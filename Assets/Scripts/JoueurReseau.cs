@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using Fusion; // namespace pour utiliser les classes de Fusion
 /* 
  * 1.Les objets réseau ne doivent pas dériver de MonoBehavior, mais bien de NetworkBehavior
@@ -22,6 +23,15 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
     //Variable qui sera automatiquement synchronisée par le serveur sur tous les clients
     [Networked] public Color maCouleur { get; set; }
 
+    // Variable pour le pointage (nombre de boules rouge) du joueur qui sera automatiquement synchronisé par le serveur sur tous les clients
+    // Lorsqu'un chanegement est détecté, la fonction OnChangementPointage sera automatiquement appelée pour faire
+    // une mise à jour de l'affichage du texte.
+    [Networked, OnChangedRender(nameof(OnChangementPointage))] public int nbBoulesRouges { get; set; }
+
+    // Variable pour mémoriser la zone de texte au dessus de la tête du joueur et qui afficher le pointage
+    // Cette variable doit être définie dans l'inspecteur de Unity
+    public TextMeshProUGUI affichagePointageJoueur;
+
     public static JoueurReseau Local; //.2
 
     //Ajout d'une variable public Transform. Dans Unity, glisser l'objet "visuel" du prefab du joueur
@@ -36,7 +46,7 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
     }
 
     public override void Spawned() //3.
-        {
+    {
         if (Object.HasInputAuthority) {
             Local = this;
 
@@ -60,11 +70,20 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
         }
     }
 
+
+
     public void PlayerLeft(PlayerRef player) //.4
     {
         if (player == Object.InputAuthority)
         {
             Runner.Despawn(Object);
         }
+    }
+
+    /* Fonction appelée automatiquement lorsqu'un changement est détecté dans la variable nbBoulesRouges du joueur (variable Networked)
+    Mise à jour du pointage du joueur qui sera égal au nombre de boules rouges ramassées
+    */
+    public void OnChangementPointage() {
+        affichagePointageJoueur.text = nbBoulesRouges.ToString();
     }
 }
