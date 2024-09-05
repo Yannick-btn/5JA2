@@ -31,9 +31,8 @@ public class GestionnaireReseau : MonoBehaviour, INetworkRunnerCallbacks {
     }
 
 
-        // Fonction asynchrone pour démarrer Fusion et créer une partie
-       public async void CreationPartie(GameMode mode) 
-        {
+    // Fonction asynchrone pour démarrer Fusion et créer une partie
+    public async void CreationPartie(GameMode mode) {
         /*  1.Mémorisation du component NetworkRunner . On garde en mémoire
             la référence à ce component dans la variable _runner.
             2.Indique au NetworkRunner qu'il doit fournir les entrées (inputs) au 

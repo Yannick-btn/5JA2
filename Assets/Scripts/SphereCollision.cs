@@ -15,6 +15,7 @@ la variable joueurReseau contiendra la référence au script JoueurReseau du joueu
 4. On Despawn l'objet touché (la boule rouge). Seul le serveur exécute cette commande, mais l'objet disparaitra sur tous les clients.
 */
 public class SphereCollision : NetworkBehaviour {
+   
     private void OnTriggerEnter(Collider other) //1.
 {
         if (Runner.IsServer && other.gameObject.TryGetComponent(out JoueurReseau joueurReseau)) //2.

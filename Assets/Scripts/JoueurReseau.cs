@@ -49,8 +49,9 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
     }
 
     public override void Spawned() //3.
-    {
-
+       {
+        // À sa création, le joueur ajoute sa référence (son script JoueurReseau) et son pointage (var nbBoulesRouges) au dictionnaire
+        // du GameManager.
         GameManager.joueursPointagesData.Add(this, nbBoulesRouges);
 
         if (Object.HasInputAuthority) {
@@ -70,8 +71,6 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
 
             //On désactive la mainCamera. Assurez-vous que la caméra de départ possède bien le tag MainCamera
             Camera.main.gameObject.SetActive(false);
-
-
         } else {
             //Si le joueur créé est contrôlé par un autre joueur, on désactive le component caméra de cet objet
             Camera camLocale = GetComponentInChildren<Camera>();
@@ -119,4 +118,6 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
     public void OnChangementPointage() {
         affichagePointageJoueur.text = $"{monNom}:{nbBoulesRouges.ToString()}";
     }
+
+
 }
