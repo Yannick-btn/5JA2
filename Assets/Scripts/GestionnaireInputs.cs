@@ -17,6 +17,7 @@ public class GestionnaireInputs : MonoBehaviour {
     Vector2 mouvementInputVecteur = Vector2.zero;
     Vector2 vueInputVecteur = Vector2.zero;
     bool ilSaute;
+    public bool pretARecommencer;
     GestionnaireCameraLocale gestionnaireCameraLocale;
 
     /*
@@ -26,7 +27,7 @@ public class GestionnaireInputs : MonoBehaviour {
         gestionnaireCameraLocale = GetComponentInChildren<GestionnaireCameraLocale>();
     }
 
-    /*
+    /*  
      * On s'assure que le curseur est invisible et verrouillé au centre
      */
     private void Start() {
@@ -55,6 +56,12 @@ public class GestionnaireInputs : MonoBehaviour {
         //Saut
         if (Input.GetButtonDown("Jump"))
             ilSaute = true;
+
+        if (!GameManager.partieEnCours) {
+            if (Input.GetKeyDown(KeyCode.R)) {
+                pretARecommencer = true;
+            }
+        }
     }
 
     /*
@@ -75,6 +82,8 @@ public class GestionnaireInputs : MonoBehaviour {
         donneesInputReseau.vecteurDevant = gestionnaireCameraLocale.gameObject.transform.forward;
         donneesInputReseau.saute = ilSaute;
         ilSaute = false;
+
+        donneesInputReseau.pretARejouer = pretARecommencer;
         //3.
         return donneesInputReseau;
     }

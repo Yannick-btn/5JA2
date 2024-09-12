@@ -5,6 +5,8 @@ using Fusion;
 using TMPro;
 public class GameManager : MonoBehaviour {
     public static GameManager instance; // Référence à l'instance du GameManager
+    public int objectifPoints = 2; // Nombre de point pour finir la partie
+
     public static bool partieEnCours = true;  // Est que la partie est en cours (static)
     [SerializeField] GestionnaireReseau gestionnaireReseau; // Reférence au gestionnaire réseau
     public static string nomJoueurLocal; // Le nom du joueur local
@@ -12,7 +14,14 @@ public class GameManager : MonoBehaviour {
     //Dictionnaire pour mémoriser chaque JoueurReseau et son pointage. Au moment de la création d'un joueur (fonction Spawned() du joueur)
     // il ajoutera lui même sa référence au dictionnaire du GameManager.
 
+    // Liste static vide de type JoueurReseau qui servira à garder en mémoire tous les
+    // joueurs connectés. Sera utilisé entre 2 parties pour gérer la reprise.
+    public static List<JoueurReseau> lstJoueurReseau = new List<JoueurReseau>();
+
     [Header("Éléments UI")]
+    public GameObject refPanelGagnant; // Référence au panel affichant le texte du gagnant.
+    public TextMeshProUGUI refTxtGagnant; // Référence à la zone de texte pour afficher le nom du gagnant.
+    public GameObject refPanelAttente; // Référence au panel affichant le d'attente entre deux partie.
     public GameObject refCanvasDepart; // Référence au canvas de départ
     public GameObject refCanvasJeu; // Référence au canvas de jeu
     public TextMeshProUGUI refTxtNomJoueur; // Référence à la zone texte contenant le nom du joueur (dans CanvasDepart)
@@ -50,10 +59,45 @@ public class GameManager : MonoBehaviour {
     public void OnRejoindrePartie() {
         //.1
         nomJoueurLocal = refTxtNomJoueur.text;
+        print("OnRejoindrePartie : nomJoueurLocal");
         //.2
         gestionnaireReseau.CreationPartie(GameMode.AutoHostOrClient);
         //.3
         refCanvasDepart.SetActive(false);
         refCanvasJeu.SetActive(true);
     }
+
+    /* Fonction appelé par le script JoueurReseau du joueur gagnant (qui a ramassé 10 boules)
+      1. Variable partieEnCours mise à false
+      2. Activation du panel UI pour afficher le gagnant
+      3. On met le nom du gagnant dans la zone de texte (reçu en paramètre)
+      4. Construction d'une liste contenant la référence à tous les joueurs présents. Sera
+      utilisée pour reprendre une partie en permettant d'attendre que tous les joueurs soient prêts
+      */
+    public void FinPartie(string nomGagnant) {
+        partieEnCours = false;
+        refPanelGagnant.SetActive(true);
+        refTxtGagnant.text = nomGagnant;
+        foreach (JoueurReseau leJoueur in joueursPointagesData.Keys) {
+            lstJoueurReseau.Add(leJoueur);
+        }
+    }
+    /* Fonction appelée par le GestionnaireMouvementPersonnage qui vérifie si la touche "R" a été
+   enfoncée pour reprendre une nouvelle partie. Cette fonction sera exécuté seulement sur le
+   serveur.
+   1. On retire de la liste lstJoueurReseau la référence au joueur qui est prêt à reprendre.
+   2. Si la liste lstJoueurReseau est rendu vide (== 0), c'est que tous les joueurs sont prêt
+   a reprendre. Si c'est le cas, on appelle la fonction Recommence présente dans le script
+   JoueurReseau. Tous les joueurs exécuteront cette fonction.
+   */
+    public void JoueurPretReprise(JoueurReseau joueurReseau) {
+        lstJoueurReseau.Remove(joueurReseau);
+
+        if (lstJoueurReseau.Count == 0) {
+            foreach (JoueurReseau leJoueur in joueursPointagesData.Keys) {
+                leJoueur.Recommence();
+            }
+        }
+    }
+
 }

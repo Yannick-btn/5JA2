@@ -23,6 +23,12 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
     //Variable qui sera automatiquement synchronisée par le serveur sur tous les clients
     [Networked] public Color maCouleur { get; set; }
 
+    // Variable est mise à true lorsque tous les joueurs sont prêts à reprendre une nouvelle partie
+    // Il s'agit d'une variable synchronisée sur toues les clients. Lorsqu'un changement est détecté
+    // la fonctionne OnNouvellePartie() sera exécutée.
+    [Networked, OnChangedRender(nameof(OnNouvellePartie))] public bool recommence { get; set; }
+
+
     // Variable pour le pointage (nombre de boules rouge) du joueur qui sera automatiquement synchronisé par le serveur sur tous les clients
     // Lorsqu'un chanegement est détecté, la fonction OnChangementPointage sera automatiquement appelée pour faire
     // une mise à jour de l'affichage du texte.
@@ -117,7 +123,38 @@ public class JoueurReseau : NetworkBehaviour, IPlayerLeft //1.
     */
     public void OnChangementPointage() {
         affichagePointageJoueur.text = $"{monNom}:{nbBoulesRouges.ToString()}";
+
+        // On vérifie si le nombre de boules rouge == l'objectif de points à atteindre
+        // Si oui, on appelle la fonction FinPartie en passant le nom du joueur gagnant.
+        // Cette fonction sera appelée dans le script du gagnant, sur tous les clients connectés
+        if (nbBoulesRouges >= GameManager.instance.objectifPoints) {
+            GameManager.instance.FinPartie(monNom);
+        }
     }
 
+    /* Fonction appelée par le GameManager lorsque tous les joueurs sont prêts et qu'il faut relancer
+   une nouvelle partie.
+  */
+    public void Recommence() {
+        recommence = true;
+    }
+
+    /* Fonction appelée lorsque la variable réseau recommence = true.
+    1. Si c'est le joueur local (hasInputAuthority), on désactive les panneux de victoire et d'attente
+    2. Si la variable recommence est bien égale à true, on remet différentes variales à leur valeur
+    de base, c'est-à-dire celle qu'elles doivent avoir en début de partie, comme le nbBoulesRouges = 0;
+   */
+    public void OnNouvellePartie() {
+        if (Object.HasInputAuthority) {
+            GameManager.instance.refPanelAttente.SetActive(false);
+            GameManager.instance.refPanelGagnant.SetActive(false);
+        }
+        if (recommence) {
+            GetComponent<GestionnaireInputs>().pretARecommencer = false;
+            nbBoulesRouges = 0;
+            GameManager.partieEnCours = true;
+            recommence = false;
+        }
+    }
 
 }

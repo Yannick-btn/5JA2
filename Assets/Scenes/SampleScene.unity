@@ -316,7 +316,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f7c07108f29b04f925f1d64d1be773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectifPoints: 2
   gestionnaireReseau: {fileID: 5334259313034427513}
+  refPanelGagnant: {fileID: 962155415}
+  refTxtGagnant: {fileID: 1007092178}
+  refPanelAttente: {fileID: 385778820}
   refCanvasDepart: {fileID: 2129351513}
   refCanvasJeu: {fileID: 353363713}
   refTxtNomJoueur: {fileID: 1477050761}
@@ -668,6 +672,11 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 374947902}
+--- !u!1 &385778820 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8816884511866435157, guid: 06cae32c41b9f475baeaab7b5eb92ed0, type: 3}
+  m_PrefabInstance: {fileID: 809484868}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &408047437 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6730264960110880057, guid: 11e4ff54c84de5049b680030415a2c54, type: 3}
@@ -1225,6 +1234,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904823452}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &962155415 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1679793220609156037, guid: 06cae32c41b9f475baeaab7b5eb92ed0, type: 3}
+  m_PrefabInstance: {fileID: 809484868}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1317,6 +1331,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1007092178 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2247411862923066407, guid: 06cae32c41b9f475baeaab7b5eb92ed0, type: 3}
+  m_PrefabInstance: {fileID: 809484868}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1098500399 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6730264960110880057, guid: 11e4ff54c84de5049b680030415a2c54, type: 3}
@@ -1415,7 +1440,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortKey: 237563369
   ObjectInterest: 1
-  Flags: 1
+  Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 1154921693}
