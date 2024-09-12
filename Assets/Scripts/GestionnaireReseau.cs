@@ -25,6 +25,9 @@ public class GestionnaireReseau : MonoBehaviour, INetworkRunnerCallbacks {
     // Pour compteur le nombre de joueurs connectés
     public int nbJoueurs = 0;
 
+    public SphereCollision sphereCollision; // référence au prefab de la boule rouge
+    public bool spheresDejaSpawn; // Permet de savoir les boules ont déjà été créées.
+
     void Start() {
         // Création d'une partie dès le départ
         //CreationPartie(GameMode.AutoHostOrClient);

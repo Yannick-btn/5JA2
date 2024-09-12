@@ -6,6 +6,7 @@ using TMPro;
 public class GameManager : MonoBehaviour {
     public static GameManager instance; // Référence à l'instance du GameManager
     public int objectifPoints = 2; // Nombre de point pour finir la partie
+    public int nbBoulesRougesDepart = 20; // Nombre de boules rouges a spawner au début d'une partie.
 
     public static bool partieEnCours = true;  // Est que la partie est en cours (static)
     [SerializeField] GestionnaireReseau gestionnaireReseau; // Reférence au gestionnaire réseau
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour {
     // joueurs connectés. Sera utilisé entre 2 parties pour gérer la reprise.
     public static List<JoueurReseau> lstJoueurReseau = new List<JoueurReseau>();
 
+
+
     [Header("Éléments UI")]
     public GameObject refPanelGagnant; // Référence au panel affichant le texte du gagnant.
     public TextMeshProUGUI refTxtGagnant; // Référence à la zone de texte pour afficher le nom du gagnant.
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour {
     public GameObject refCanvasJeu; // Référence au canvas de jeu
     public TextMeshProUGUI refTxtNomJoueur; // Référence à la zone texte contenant le nom du joueur (dans CanvasDepart)
     public TextMeshProUGUI refTxtPointage; // Référence à la zone d'affichage de tous les pointages (dans CanvasJeu)
+    public GameObject txtAttenteAutreJoueur; // Texte sous forme de bandeau rouge pour indiquer au joueur qu'il est en attente. À défénir dans l'inspecteur de Unity.
 
 
     // Au départ, on définit la variable "instance" qui permettra au autre script de communiquer avec l'instance du GameManager.
@@ -100,4 +104,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    /* Fonction permettant d'afficher ou de masquer le texte d'attente d'un autre joueur (bandeau rouge) */
+    public void AfficheAttenteAutreJoueur(bool etat) {
+        txtAttenteAutreJoueur.SetActive(etat);
+    }
+
+    /* Fonction appelée lors qu'il est temps d'instancier de nouvelles boules rouges en début de partie
+   On appelle simplement une autre fonction CreationBoulleRouge dans le script gestionnaireReseau.
+   */
+    /*public void NouvellesBoulesRouges() {
+        gestionnaireReseau.CreationBoulleRouge();
+    }*/
 }
