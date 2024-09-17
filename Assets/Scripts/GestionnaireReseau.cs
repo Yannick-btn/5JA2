@@ -34,6 +34,19 @@ public class GestionnaireReseau : MonoBehaviour, INetworkRunnerCallbacks {
     }
 
 
+    /* Fonction exécuté sur le serveur seulement qui spawn le nombre de boules rouges déterminés au lancement
+   d'une nouvelle partie.
+   */
+    public void CreationBoulleRouge() {
+        if (_runner.IsServer && !spheresDejaSpawn) {
+            GameManager.partieEnCours = true;
+            for (int i = 0; i < GameManager.instance.nbBoulesRougesDepart; i++) {
+                _runner.Spawn(sphereCollision, Utilitaires.GetPositionSpawnAleatoire(), Quaternion.identity);
+            }
+            spheresDejaSpawn = true;
+        }
+    }
+
     // Fonction asynchrone pour démarrer Fusion et créer une partie
     public async void CreationPartie(GameMode mode) {
         /*  1.Mémorisation du component NetworkRunner . On garde en mémoire

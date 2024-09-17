@@ -15,10 +15,6 @@ public class GameManager : MonoBehaviour {
     //Dictionnaire pour mémoriser chaque JoueurReseau et son pointage. Au moment de la création d'un joueur (fonction Spawned() du joueur)
     // il ajoutera lui même sa référence au dictionnaire du GameManager.
 
-    // Liste static vide de type JoueurReseau qui servira à garder en mémoire tous les
-    // joueurs connectés. Sera utilisé entre 2 parties pour gérer la reprise.
-    public static List<JoueurReseau> lstJoueurReseau = new List<JoueurReseau>();
-
 
 
     [Header("Éléments UI")]
@@ -71,6 +67,29 @@ public class GameManager : MonoBehaviour {
         refCanvasJeu.SetActive(true);
     }
 
+    /* Fonction qui déclenchera une nouvelle partie si toutes les conditions sont réunis.
+   1. Désactivation des panneaux de fin de partie
+   2. On met la variable partieEnCours à true;
+   3. Variable unSeulJoueur : pour gérer le cas où un seul joueur serait resté connecté.
+   4. Appel de la fonction Recommence pour chaque JoueurReseau. Si le joueur est seul, cette fonction
+   renverra true, sinon false;
+   5. S'il y a plus d'un joueur, on appelle la fonction NouvellesBoulesRouges pour spawner des boules
+   */
+    public void DebutNouvellePartie() {
+        //.1
+        refPanelAttente.SetActive(false);
+        refPanelGagnant.SetActive(false);
+        //2.
+        partieEnCours = true;
+        //3.
+        bool unSeulJoueur = false;
+        //4.
+        foreach (JoueurReseau leJoueur in joueursPointagesData.Keys) {
+            unSeulJoueur = leJoueur.Recommence();
+        }
+        if (!unSeulJoueur) NouvellesBoulesRouges();
+    }
+
     /* Fonction appelé par le script JoueurReseau du joueur gagnant (qui a ramassé 10 boules)
       1. Variable partieEnCours mise à false
       2. Activation du panel UI pour afficher le gagnant
@@ -82,26 +101,7 @@ public class GameManager : MonoBehaviour {
         partieEnCours = false;
         refPanelGagnant.SetActive(true);
         refTxtGagnant.text = nomGagnant;
-        foreach (JoueurReseau leJoueur in joueursPointagesData.Keys) {
-            lstJoueurReseau.Add(leJoueur);
-        }
-    }
-    /* Fonction appelée par le GestionnaireMouvementPersonnage qui vérifie si la touche "R" a été
-   enfoncée pour reprendre une nouvelle partie. Cette fonction sera exécuté seulement sur le
-   serveur.
-   1. On retire de la liste lstJoueurReseau la référence au joueur qui est prêt à reprendre.
-   2. Si la liste lstJoueurReseau est rendu vide (== 0), c'est que tous les joueurs sont prêt
-   a reprendre. Si c'est le cas, on appelle la fonction Recommence présente dans le script
-   JoueurReseau. Tous les joueurs exécuteront cette fonction.
-   */
-    public void JoueurPretReprise(JoueurReseau joueurReseau) {
-        lstJoueurReseau.Remove(joueurReseau);
-
-        if (lstJoueurReseau.Count == 0) {
-            foreach (JoueurReseau leJoueur in joueursPointagesData.Keys) {
-                leJoueur.Recommence();
-            }
-        }
+        gestionnaireReseau.spheresDejaSpawn = false;
     }
 
     /* Fonction permettant d'afficher ou de masquer le texte d'attente d'un autre joueur (bandeau rouge) */
@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour {
     /* Fonction appelée lors qu'il est temps d'instancier de nouvelles boules rouges en début de partie
    On appelle simplement une autre fonction CreationBoulleRouge dans le script gestionnaireReseau.
    */
-    /*public void NouvellesBoulesRouges() {
+    public void NouvellesBoulesRouges() {
         gestionnaireReseau.CreationBoulleRouge();
-    }*/
+    }
 }
