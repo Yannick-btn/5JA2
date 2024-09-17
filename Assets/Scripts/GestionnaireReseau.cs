@@ -47,6 +47,17 @@ public class GestionnaireReseau : MonoBehaviour, INetworkRunnerCallbacks {
         }
     }
 
+    /*Fonction appelé pendant le jeu, lorsqu'il est nécessaire de créer de nouvelles
+boule rouges. Réception en paramètre du nombre de boules à créer.
+*/
+    public void AjoutBoulesRouges(int combien) {
+        if (_runner.IsServer) {
+            for (int i = 0; i < combien; i++) {
+                _runner.Spawn(sphereCollision, Utilitaires.GetPositionSpawnAleatoire(), Quaternion.identity);
+            }
+        }
+    }
+
     // Fonction asynchrone pour démarrer Fusion et créer une partie
     public async void CreationPartie(GameMode mode) {
         /*  1.Mémorisation du component NetworkRunner . On garde en mémoire

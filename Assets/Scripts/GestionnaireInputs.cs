@@ -20,11 +20,15 @@ public class GestionnaireInputs : MonoBehaviour {
     public bool pretARecommencer;
     GestionnaireCameraLocale gestionnaireCameraLocale;
 
+    bool ilTir = false; // Détection locale du clic de souris.
+    GestionnaireMouvementPersonnage gestionnaireMouvementPersonnage; // référence au script de mouvement
+
     /*
      * Avant le Start(), on mémorise la référence au component GestionnaireCameraLocale de la caméra du joueur
      */
     void Awake() {
         gestionnaireCameraLocale = GetComponentInChildren<GestionnaireCameraLocale>();
+        gestionnaireMouvementPersonnage = GetComponent<GestionnaireMouvementPersonnage>();
     }
 
     /*  
@@ -53,9 +57,17 @@ public class GestionnaireInputs : MonoBehaviour {
         vueInputVecteur.y = Input.GetAxis("Mouse Y");
         gestionnaireCameraLocale.SetInputVue(vueInputVecteur); // ligne a décommenter plus tard
 
+        // Optimisation : on exécute seulement le Update si le client contrôle ce joueur
+        if (!gestionnaireMouvementPersonnage.Object.HasInputAuthority)
+            return;
+
         //Saut
         if (Input.GetButtonDown("Jump"))
             ilSaute = true;
+
+        //Tir
+        if (Input.GetButtonDown("Fire1"))
+            ilTir = true;
 
         if (!GameManager.partieEnCours) {
             if (Input.GetKeyDown(KeyCode.R)) {
@@ -81,7 +93,10 @@ public class GestionnaireInputs : MonoBehaviour {
         donneesInputReseau.mouvementInput = mouvementInputVecteur;
         donneesInputReseau.vecteurDevant = gestionnaireCameraLocale.gameObject.transform.forward;
         donneesInputReseau.saute = ilSaute;
+        donneesInputReseau.appuieBoutonTir = ilTir;
+
         ilSaute = false;
+        ilTir = false;
 
         donneesInputReseau.pretARejouer = pretARecommencer;
         //3.

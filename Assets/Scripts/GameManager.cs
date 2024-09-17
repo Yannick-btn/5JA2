@@ -115,4 +115,11 @@ public class GameManager : MonoBehaviour {
     public void NouvellesBoulesRouges() {
         gestionnaireReseau.CreationBoulleRouge();
     }
+
+    /* Fonction du GameManager qui recoit le nombre de boules rouges à créer. Appelle ensuite
+   une fonction du même nom dans le GestionnaireRéseau.
+   */
+    public void AjoutBoulesRouges(int combien) {
+        gestionnaireReseau.AjoutBoulesRouges(combien);
+    }
 }
