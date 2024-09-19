@@ -21,6 +21,7 @@ public struct DonneesInputReseau : INetworkInput {
     // sera changée dans un autre script, quand le joueur appuiera sur la touche "R".
     public NetworkBool pretARejouer;
 
+
     /* pour le serveur : permet de savoir si le joueur a appuyé sur le bouton de tir
 la variable sera définie dans le script GestionnaireInputs*/
     public NetworkBool appuieBoutonTir;
