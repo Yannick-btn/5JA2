@@ -78,35 +78,35 @@ boule rouges. Réception en paramètre du nombre de boules à créer.
          */
         await _runner.StartGame(new StartGameArgs() {
             GameMode = mode,
-            SessionName = "ttt",
+            SessionName = GameManager.instance.nomDeLapartie,
             Scene = SceneRef.FromIndex(IndexSceneJeu),
-            PlayerCount = 10, //ici, on limite à 10 joueurs
+            PlayerCount = GameManager.instance.nombreDeJoueurMax,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
     }
-        
+
     public void OnConnectedToServer(NetworkRunner runner) {
-        
+
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) {
-       
+
     }
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {
-       
+
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {
-       
+
     }
 
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {
-       
+
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {
-  
+
     }
 
     /* Fonction du Runner pour définir les inputs du client dans la simulation
@@ -152,8 +152,7 @@ boule rouges. Réception en paramètre du nombre de boules à créer.
             leNouveuJoueur.maCouleur = couleurJoueurs[nbJoueurs];
             nbJoueurs++;
             if (nbJoueurs >= 10) nbJoueurs = 0;
-        } 
-        else {
+        } else {
             Debug.Log("Un joueur s'est connecté comme client. Spawn d'un joueur");
         }
     }
@@ -182,12 +181,18 @@ boule rouges. Réception en paramètre du nombre de boules à créer.
 
     }
 
+    /*
+    * Fonction appelée lorsqu'une connexion réseau est refusée ou lorsqu'un client perd
+    * la connexion suite à une erreur réseau. Le paramètre ShutdownReason est une énumération (enum)
+    * contenant différentes causes possibles.
+    * Ici, lorsque la connexion est refusée car le nombre maximal de joueurs est atteint, on appelle la
+    * fonction NavigationPanel du GameManager en passant la valeur true en parmètre.
+    */
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {
         if (shutdownReason == ShutdownReason.GameIsFull) {
-            Debug.Log("Le maximum de joueur est atteint. Réessayer plus tard.");
+            GameManager.instance.NavigationPanel(true);
         }
-
-    }
+    } 
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {
 
